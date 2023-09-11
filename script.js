@@ -128,44 +128,61 @@ const renderCountry = function (data, className = '') {
 // };
 // getCountryData('nigeria');
 
-const renderError = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  //   countriesContainer.style.opacity = 1;
-};
+////////////////////////////////////////////
+// Throwing Errors Manually
 
-const getJSON = function (url, errorMsg = 'Something went wrong') {
-  return fetch(url).then(response => {
-    if (!response.ok) throw new Error(`${errorMsg}(${response.status})`);
-    return response.json();
-  });
-};
-const getCountryData = function (country) {
-  // Country 1
-  getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
-    .then(data => {
-      renderCountry(data[0]);
-    //   const neighbour = data[0].borders[0];
-    const neighbour ='jhdt';
+// const renderError = function (msg) {
+//   countriesContainer.insertAdjacentText('beforeend', msg);
+//   //   countriesContainer.style.opacity = 1;
+// };
 
-      if (!neighbour) return;
+// const getJSON = function (url, errorMsg = 'Something went wrong') {
+//   return fetch(url).then(response => {
+//     if (!response.ok) throw new Error(`${errorMsg}(${response.status})`);
+//     return response.json();
+//   });
+// };
+// const getCountryData = function (country) {
+//   // Country 1
+//   getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
+//     .then(data => {
+//       renderCountry(data[0]);
+//     //   const neighbour = data[0].borders[0];
+//     const neighbour ='jhdt';
 
-      // Country 2
-      return getJSON(
-        `https://restcountries.com/v2/alpha/${neighbour}`,
-        'Country not found'
-      );
-    })
-    .then(data => renderCountry(data, 'neighbour'))
-    .catch(err => {
-      console.log(`${err}💥💥💥`);
-      renderError(`Something went wrong 💥💥💥 ${err.message}. Try again!`);
-    })
-    .finally(() => {
-      countriesContainer.style.opacity = 1;
-    });
-};
-btn.addEventListener('click', function () {
-  getCountryData('nigeria');
+//       if (!neighbour) return;
+
+//       // Country 2
+//       return getJSON(
+//         `https://restcountries.com/v2/alpha/${neighbour}`,
+//         'Country not found'
+//       );
+//     })
+//     .then(data => renderCountry(data, 'neighbour'))
+//     .catch(err => {
+//       console.log(`${err}💥💥💥`);
+//       renderError(`Something went wrong 💥💥💥 ${err.message}. Try again!`);
+//     })
+//     .finally(() => {
+//       countriesContainer.style.opacity = 1;
+//     });
+// };
+// btn.addEventListener('click', function () {
+//   getCountryData('nigeria');
+// });
+
+///////////////////////////////////////
+// Building a Simple Promise
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('Lotter draw is happening 🔮');
+  setTimeout(function () {
+    if (Math.random() >= 0.5) {
+      resolve('You WIN 💰');
+    } else {
+      reject(new Error('You lost your money 💩'));
+    }
+  }, 2000);
 });
 
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
 
