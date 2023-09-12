@@ -188,41 +188,94 @@ const renderCountry = function (data, className = '') {
 
 ///////////////////////////////////////
 // Promisifying setTimeout
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+// wait(1)
+//   .then(() => {
+//     console.log('1 second passed')
+//     return wait(1);
+//   })
+//   .then(() => {
+//     console.log('2 second passed')
+//     return wait(1);
+//   })
+//   .then(() => {
+//     console.log('3 second passed')
+//     return wait(1);
+//   })
+//   .then(() => console.log('4 second passed'));
+
+//   // setTimeout(() => {
+// //   console.log('1 second passed');
+// //   setTimeout(() => {
+// //     console.log('2 seconds passed');
+// //     setTimeout(() => {
+// //       console.log('3 second passed');
+// //       setTimeout(() => {
+// //         console.log('4 second passed');
+// //       }, 1000);
+// //     }, 1000);
+// //   }, 1000);
+// // }, 1000);
+
+// Promise.resolve('abc').then(x => console.log(x));
+// Promise.reject(new Error('Problem!')).catch(x => console.error(x));
+
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+/////////////////////////////////////////////////
+// Implemented an image loading functionality
+
 const wait = function (seconds) {
   return new Promise(function (resolve) {
     setTimeout(resolve, seconds * 1000);
   });
 };
+const imgContainer = document.querySelector('.images');
 
-wait(1)
-  .then(() => {
-    console.log('1 second passed')
-    return wait(1);
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+
+    // Listening to the error event
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+let currentImg;
+
+createImage('./img/img-1.jpg')
+  .then(img => {
+    currentImg = img;
+    console.log('Image 1 loaded');
+    return wait(2);
   })
   .then(() => {
-    console.log('2 second passed')
-    return wait(1);
+    currentImg.style.display = 'none';
+    return createImage('./img/img-2.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 2 loaded');
+    return wait(2);
   })
   .then(() => {
-    console.log('3 second passed')
-    return wait(1);
+    currentImg.style.display = 'none';
   })
-  .then(() => console.log('4 second passed'));
-
-  // setTimeout(() => {
-//   console.log('1 second passed');
-//   setTimeout(() => {
-//     console.log('2 seconds passed');
-//     setTimeout(() => {
-//       console.log('3 second passed');
-//       setTimeout(() => {
-//         console.log('4 second passed');
-//       }, 1000);
-//     }, 1000);
-//   }, 1000);
-// }, 1000);
-
-Promise.resolve('abc').then(x => console.log(x));
-Promise.reject(new Error('Problem!')).catch(x => console.error(x));
-
-
+  .catch(err => console.error(err));
